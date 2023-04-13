@@ -43,3 +43,42 @@ jobs:
         with:
           name: crystalline_x86_64-unknown-linux-musl
           path: ./crystalline
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@cec98b9d092141f74527d0afa6feb2af698cfe89
+
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: "1.7.3"
+
+      # - name: Download LLVM
+      #   if: steps.cache-llvm.outputs.cache-hit != 'true'
+      #   run: |
+      #     iwr https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/llvm-15.0.7.src.tar.xz -OutFile llvm.tar.xz
+      #     (Get-FileHash -Algorithm SHA256 .\llvm.tar.xz).hash -eq "4AD8B2CC8003C86D0078D15D987D84E3A739F24AAE9033865C027ABAE93EE7A4"
+      #     7z x llvm.tar.xz
+      #     7z x llvm.tar
+      #     mv llvm-* llvm-src
+
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "10.0"
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build the static binary
+        run: docker build -t crystalline .
+
+      - name: Copy binary to host
+        run: |
+          docker run -v %CD%:/app/host --rm crystalline:latest cp ./bin/crystalline ./host/crystalline
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: crystalline_x86_64-windows-msvc-unknown
