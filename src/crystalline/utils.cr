@@ -124,7 +124,7 @@ module Crystalline::Utils
       end
     }
   rescue e
-    # LSP::Log.error(exception: e) { e.to_s }
+    LSP::Log.error(exception: e) { e.to_s }
     d.to_s
   end
 end

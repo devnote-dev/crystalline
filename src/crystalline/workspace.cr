@@ -257,13 +257,13 @@ class Crystalline::Workspace
       n = nodes.last?
       contents = [] of String
 
-      # LSP::Log.info { "Node at cursor: #{n}" }
-      # LSP::Log.info { "Node class: #{n.class}" }
-      # LSP::Log.info { "Node expansion: #{n.expanded if n.responds_to? :expanded}" }
-      # LSP::Log.info { "Node type: #{n.try &.type?}" }
-      # LSP::Log.info { "Node type class: #{n.try &.type?.try &.class}" }
-      # LSP::Log.info { "Nodes classes: #{nodes.map &.class}" }
-      # LSP::Log.info { "Context: #{_context}" }
+      LSP::Log.info { "Node at cursor: #{n}" }
+      LSP::Log.info { "Node class: #{n.class}" }
+      LSP::Log.info { "Node expansion: #{n.expanded if n.responds_to? :expanded}" }
+      LSP::Log.info { "Node type: #{n.try &.type?}" }
+      LSP::Log.info { "Node type class: #{n.try &.type?.try &.class}" }
+      LSP::Log.info { "Nodes classes: #{nodes.map &.class}" }
+      LSP::Log.info { "Context: #{_context}" }
 
       if n.is_a? Crystal::Def || n.is_a? Crystal::Macro
         contents << code_markdown(Utils.format_def(n), language: "crystal")
@@ -371,7 +371,7 @@ class Crystalline::Workspace
     text_document = @opened_documents[file_uri.to_s]?
     return unless text_document
 
-    # LSP::Log.info { "completion: #{trigger_character}"}
+    LSP::Log.info { "completion: #{trigger_character}" }
 
     document_lines = fix_source(text_document.contents).lines(chomp: false)
     left_offset = 0
@@ -406,9 +406,9 @@ class Crystalline::Workspace
     }
     suffix = suffix.try &.[right_offset...]?
 
-    # LSP::Log.info { "prefix(left offset #{left_offset}): #{prefix}"}
-    # LSP::Log.info { "suffix(right offset #{right_offset}): #{suffix}"}
-    # LSP::Log.info { "trigger character: #{trigger_character}"}
+    LSP::Log.info { "prefix(left offset #{left_offset}): #{prefix}"}
+    LSP::Log.info { "suffix(right offset #{right_offset}): #{suffix}"}
+    LSP::Log.info { "trigger character: #{trigger_character}"}
 
     document_lines[position.line] = prefix + (!truncate_line ? (suffix || "\n") : "\n")
     # Force the compiler load the file from this Hash.
@@ -440,11 +440,11 @@ class Crystalline::Workspace
     nodes.last?.try do |n|
       completion_items = [] of LSP::CompletionItem
 
-      # LSP::Log.info { "Node at cursor: #{n}" }
-      # LSP::Log.info { "Node class: #{n.class}" }
-      # LSP::Log.info { "Node type: #{n.type?}" }
-      # LSP::Log.info { "Node type class: #{n.type?.try &.class}" }
-      # LSP::Log.info { "Node type defs: #{n.type?.try &.defs}" }
+      LSP::Log.info { "Node at cursor: #{n}" }
+      LSP::Log.info { "Node class: #{n.class}" }
+      LSP::Log.info { "Node type: #{n.type?}" }
+      LSP::Log.info { "Node type class: #{n.type?.try &.class}" }
+      LSP::Log.info { "Node type defs: #{n.type?.try &.defs}" }
 
       range = LSP::Range.new(
         start: LSP::Position.new(line: position.line, character: position.character - left_offset + 1),
@@ -608,13 +608,13 @@ class Crystalline::Workspace
   end
 
   private def fix_source(source : String) : String
-    # LSP::Log.info { "Fixing source: #{source}" }
+    LSP::Log.info { "Fixing source: #{source}" }
     Crystal::Parser.parse(source)
-    # LSP::Log.info { "No need to fix source!" }
+    LSP::Log.info { "No need to fix source!" }
     source
   rescue
     fixed_source = BrokenSourceFixer.fix(source)
-    # LSP::Log.info { "Fixed source: #{fixed_source}" }
+    LSP::Log.info { "Fixed source: #{fixed_source}" }
     fixed_source
   end
 end

@@ -30,7 +30,7 @@ module Crystalline::Analysis
     end
 
     def visit(node)
-      # LSP::Log.info { "#{node.class}: #{node}" }
+      LSP::Log.info { "#{node.class}: #{node}" }
       true
     end
 
