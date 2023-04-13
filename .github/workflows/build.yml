@@ -63,10 +63,20 @@ jobs:
       #     7z x llvm.tar
       #     mv llvm-* llvm-src
 
+      - name: Cache LLVM and Clang
+        id: cache-llvm
+        uses: actions/cache@v3
+        with:
+          path: |
+            C:/Program Files/LLVM
+            ./llvm
+          key: llvm-11.0
+
       - name: Install LLVM and Clang
         uses: KyleMayes/install-llvm-action@v1
         with:
-          version: "10.0"
+          version: "11.0"
+          cached: ${{ steps.cache-llvm.outputs.cache-hit }}
 
       - name: Checkout repository
         uses: actions/checkout@v2
